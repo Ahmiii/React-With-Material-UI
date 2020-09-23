@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core";
 
 const style = {
   sideMenue: {
+    flex: 0.3,
     display: "flex",
     flexDirection: "column",
     left: "0px",

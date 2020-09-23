@@ -6,40 +6,51 @@ import {
   InputBase,
   IconButton,
   Badge,
+  withStyles,
 } from "@material-ui/core";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import ChatIcon from "@material-ui/icons/Chat";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-const header = () => {
+
+const styles = {
+  header: {
+    paddingLeft: "320px",
+    width: "100%",
+  },
+};
+const header = (props) => {
+  const { classes } = props;
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Grid container>
-          <Grid item>
-            <InputBase />
+    <div className={classes.header}>
+      <AppBar position="relative">
+        <Toolbar>
+          <Grid container>
+            <Grid item>
+              <InputBase />
+            </Grid>
+            <Grid item sm></Grid>
+            <Grid item>
+              <IconButton>
+                <Badge badgeContent={4} color="secondary">
+                  <NotificationsActiveIcon />
+                </Badge>
+              </IconButton>
+              <IconButton>
+                <Badge badgeContent={4} color="secondary">
+                  <ChatIcon />
+                </Badge>
+              </IconButton>
+              <IconButton>
+                <Badge color="secondary">
+                  <PowerSettingsNewIcon />
+                </Badge>
+              </IconButton>
+            </Grid>
           </Grid>
-          <Grid item sm></Grid>
-          <Grid item>
-            <IconButton>
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsActiveIcon />
-              </Badge>
-            </IconButton>
-            <IconButton>
-              <Badge badgeContent={4} color="secondary">
-                <ChatIcon />
-              </Badge>
-            </IconButton>
-            <IconButton>
-              <Badge color="secondary">
-                <PowerSettingsNewIcon />
-              </Badge>
-            </IconButton>
-          </Grid>
-        </Grid>
-      </Toolbar>
-    </AppBar>
+        </Toolbar>
+      </AppBar>
+    </div>
   );
 };
 
-export default header;
+export default withStyles(styles)(header);
