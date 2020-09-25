@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  withStyles,
-  Grid,
-  TextField,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-} from "@material-ui/core";
+import Textfiled from "../../controls/inputs";
+import RadioButtons from "../../controls/RadioButton";
+import SelectDepartment from "../../controls/select";
+import CheckBox from "../../controls/checkBox";
+import { withStyles, Grid } from "@material-ui/core";
 
 const styles = (theme) => ({
   root: {
@@ -28,8 +23,21 @@ const initialValues = {
   gender: "male",
   departmentId: "",
   hireDate: new Date(),
-  isPerminent: "false",
+  isPermenent: false,
 };
+
+const genderList = [
+  { id: "male", title: "Male" },
+  { id: "female", title: "Female" },
+  { id: "other", title: "Other" },
+];
+const departments = [
+  { id: "1", title: "Development" },
+  { id: "2", title: "Marketing" },
+  { id: "3", title: "Human Resource" },
+  { id: "4", title: "Information Technology" },
+  { id: "5", title: "Accounting" },
+];
 
 const EmployeeFrom = (props) => {
   const { classes } = props;
@@ -40,6 +48,7 @@ const EmployeeFrom = (props) => {
     const changeName = { ...values };
     changeName.fullName = e.target.value;
     setValues(changeName);
+    console.log(values);
   };
 
   const HandleEmailChange = (e) => {
@@ -49,25 +58,33 @@ const EmployeeFrom = (props) => {
     setValues(changeEmail);
   };
   const HandleGenderChange = (e) => {
-    e.preventDefault();
     const changeGender = { ...values };
     changeGender.gender = e.target.value;
     setValues(changeGender);
+  };
+  const HandleDepartmentChange = (e) => {
+    const changeDepartment = { ...values };
+    changeDepartment.departmentId = e.target.value;
+    setValues(changeDepartment);
+  };
+  const HandleIsPerminentChange = () => {
+    const changeStatus = { ...values };
+    const status = changeStatus.isPermenent;
+    changeStatus.isPermenent = !status;
+    setValues(changeStatus);
   };
 
   return (
     <form className={classes.root}>
       <Grid container>
         <Grid item xs={6}>
-          <TextField
-            variant="outlined"
+          <Textfiled
             label="Full Name"
             name="fullName"
             value={values.fullName}
             onChange={HandleNameChange}
           />
-          <TextField
-            variant="outlined"
+          <Textfiled
             label="Email"
             name="email"
             value={values.email}
@@ -75,27 +92,24 @@ const EmployeeFrom = (props) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <FormControl>
-            <FormLabel>Gender</FormLabel>
-            <RadioGroup
-              row={true}
-              name="gender"
-              value={values.gender}
-              onChange={HandleGenderChange}
-            >
-              <FormControlLabel value="male" control={<Radio />} label="Male" />
-              <FormControlLabel
-                value="female"
-                control={<Radio />}
-                label="Female"
-              />
-              <FormControlLabel
-                value="other"
-                control={<Radio />}
-                label="Other"
-              />
-            </RadioGroup>
-          </FormControl>
+          <RadioButtons
+            value={values.gender}
+            genderList={genderList}
+            onChange={HandleGenderChange}
+          />
+          <SelectDepartment
+            label="Department"
+            name="departmentId"
+            value={values.departmentId}
+            onChange={HandleDepartmentChange}
+            departmentList={departments}
+          />
+          <CheckBox
+            name="isPermenent"
+            label="Permenent Employee"
+            value={values.isPermenent}
+            onChange={HandleIsPerminentChange}
+          />
         </Grid>
       </Grid>
     </form>
