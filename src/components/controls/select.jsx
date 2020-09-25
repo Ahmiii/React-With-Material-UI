@@ -1,10 +1,16 @@
 import React from "react";
-import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+} from "@material-ui/core";
 
 const SelectDepartment = (props) => {
-  const { label, name, value, onChange, departmentList } = props;
+  const { label, name, value, onChange, departmentList, error } = props;
   return (
-    <FormControl>
+    <FormControl error={error ? true : false}>
       <InputLabel>{label}</InputLabel>
       <Select label={label} name={name} value={value} onChange={onChange}>
         <MenuItem value="">None</MenuItem>
@@ -14,6 +20,8 @@ const SelectDepartment = (props) => {
           </MenuItem>
         ))}
       </Select>
+
+      {error ? <FormHelperText>{error}</FormHelperText> : ""}
     </FormControl>
   );
 };

@@ -44,6 +44,25 @@ const departments = [
 const EmployeeFrom = (props) => {
   const { classes } = props;
   const [values, setValues] = useState(initialValues);
+  const [Errors, setErrors] = useState({});
+
+  const validate = () => {
+    const temp = {};
+    temp.fullName = values.fullName ? "" : "This field is required";
+    temp.email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(
+      values.email
+    )
+      ? ""
+      : "This email is not valid";
+    temp.mobileNumber =
+      values.mobileNumber.length > 9
+        ? ""
+        : "Mobile number should be grater than 9";
+    temp.departmentId =
+      values.departmentId.length != 0 ? "" : "This field is required";
+    setErrors({ ...temp });
+    return Object.values(temp).every((x) => x === "");
+  };
 
   const HandleNameChange = (e) => {
     e.preventDefault();
@@ -93,8 +112,16 @@ const EmployeeFrom = (props) => {
     changeCity.city = e.target.value;
     setValues(changeCity);
   };
+
+  const HandleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      window.alert("form submitted");
+    }
+  };
+
   return (
-    <form className={classes.root}>
+    <form className={classes.root} onSubmit={HandleSubmit}>
       <Grid container>
         <Grid item xs={6}>
           <Textfiled
@@ -102,12 +129,14 @@ const EmployeeFrom = (props) => {
             name="fullName"
             value={values.fullName}
             onChange={HandleNameChange}
+            error={Errors.fullName}
           />
           <Textfiled
             label="Email"
             name="email"
             value={values.email}
             onChange={HandleEmailChange}
+            error={Errors.email}
           />
 
           <Textfiled
@@ -115,6 +144,7 @@ const EmployeeFrom = (props) => {
             name="mobileNumber"
             value={values.mobileNumber}
             onChange={HandleNumberChange}
+            error={Errors.mobileNumber}
           />
           <Textfiled
             label="City"
@@ -135,6 +165,7 @@ const EmployeeFrom = (props) => {
             value={values.departmentId}
             onChange={HandleDepartmentChange}
             departmentList={departments}
+            error={Errors.departmentId}
           />
           <DatePicker
             name="hireDate"
@@ -149,7 +180,7 @@ const EmployeeFrom = (props) => {
             onChange={HandleIsPerminentChange}
           />
           <div>
-            <Button type="submit" text="submit" />
+            <Button type="submit" text="submit" onClick={HandleSubmit} />
             <Button text="reset" color="default" />
           </div>
         </Grid>
