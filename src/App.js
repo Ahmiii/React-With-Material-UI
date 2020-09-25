@@ -1,10 +1,8 @@
 import React from "react";
 import SideBar from "./components/sideBar/sideBar";
 import Header from "./components/Header/header";
-import PageHeader from "./components/PageHeader/pageHeader";
-import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
+import Employess from "./components/Employees/Employess";
 import { CssBaseline } from "@material-ui/core";
-
 import "./App.css";
 
 function App() {
@@ -13,11 +11,7 @@ function App() {
       <SideBar />
       <div className="app__body">
         <Header />
-        <PageHeader
-          title="hello"
-          subtitle="hello"
-          icon={<PeopleOutlineIcon />}
-        />
+        <Employess />
       </div>
       <CssBaseline />
     </div>
