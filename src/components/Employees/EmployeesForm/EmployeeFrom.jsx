@@ -3,6 +3,8 @@ import Textfiled from "../../controls/inputs";
 import RadioButtons from "../../controls/RadioButton";
 import SelectDepartment from "../../controls/select";
 import CheckBox from "../../controls/checkBox";
+import DatePicker from "../../controls/DatePicker";
+import Button from "../../controls/Buttons";
 import { withStyles, Grid } from "@material-ui/core";
 
 const styles = (theme) => ({
@@ -73,7 +75,24 @@ const EmployeeFrom = (props) => {
     changeStatus.isPermenent = !status;
     setValues(changeStatus);
   };
-
+  const HandleDateChange = (name, value) => {
+    const changeDate = { ...values };
+    changeDate.hireDate = value;
+    setValues(changeDate);
+    console.log(values);
+  };
+  const HandleNumberChange = (e) => {
+    e.preventDefault();
+    const changeNumber = { ...values };
+    changeNumber.mobileNumber = e.target.value;
+    setValues(changeNumber);
+  };
+  const HandleCityChange = (e) => {
+    e.preventDefault();
+    const changeCity = { ...values };
+    changeCity.city = e.target.value;
+    setValues(changeCity);
+  };
   return (
     <form className={classes.root}>
       <Grid container>
@@ -90,6 +109,19 @@ const EmployeeFrom = (props) => {
             value={values.email}
             onChange={HandleEmailChange}
           />
+
+          <Textfiled
+            label="Mobile"
+            name="mobileNumber"
+            value={values.mobileNumber}
+            onChange={HandleNumberChange}
+          />
+          <Textfiled
+            label="City"
+            name="city"
+            value={values.city}
+            onChange={HandleCityChange}
+          />
         </Grid>
         <Grid item xs={6}>
           <RadioButtons
@@ -104,12 +136,22 @@ const EmployeeFrom = (props) => {
             onChange={HandleDepartmentChange}
             departmentList={departments}
           />
+          <DatePicker
+            name="hireDate"
+            label="Hire Date"
+            value={values.hireDate}
+            onChange={HandleDateChange}
+          />
           <CheckBox
             name="isPermenent"
             label="Permenent Employee"
             value={values.isPermenent}
             onChange={HandleIsPerminentChange}
           />
+          <div>
+            <Button type="submit" text="submit" />
+            <Button text="reset" color="default" />
+          </div>
         </Grid>
       </Grid>
     </form>
