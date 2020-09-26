@@ -5,6 +5,7 @@ import SelectDepartment from "../../controls/select";
 import CheckBox from "../../controls/checkBox";
 import DatePicker from "../../controls/DatePicker";
 import Button from "../../controls/Buttons";
+import * as employeeServices from "../../../services/employee";
 import { withStyles, Grid } from "@material-ui/core";
 
 const styles = (theme) => ({
@@ -46,22 +47,32 @@ const EmployeeFrom = (props) => {
   const [values, setValues] = useState(initialValues);
   const [Errors, setErrors] = useState({});
 
-  const validate = () => {
-    const temp = {};
-    temp.fullName = values.fullName ? "" : "This field is required";
-    temp.email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(
-      values.email
-    )
-      ? ""
-      : "This email is not valid";
-    temp.mobileNumber =
-      values.mobileNumber.length > 9
+  const validate = (fieldValue = values) => {
+    const temp = { ...Errors };
+    console.log(fieldValue);
+    console.log(temp);
+    if ("fullName" in fieldValue) {
+      console.log("hello");
+      temp.fullName = fieldValue.fullName ? "" : "This field is required";
+    }
+    if ("email" in fieldValue)
+      temp.email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(
+        fieldValue.email
+      )
         ? ""
-        : "Mobile number should be grater than 9";
-    temp.departmentId =
-      values.departmentId.length != 0 ? "" : "This field is required";
+        : "This email is not valid";
+    if ("mobileNumber" in fieldValue)
+      temp.mobileNumber =
+        fieldValue.mobileNumber.length > 9
+          ? ""
+          : "Mobile number should be grater than 9";
+    if ("departmentId" in fieldValue)
+      temp.departmentId =
+        fieldValue.departmentId.length !== 0 ? "" : "This field is required";
+
     setErrors({ ...temp });
-    return Object.values(temp).every((x) => x === "");
+    if (fieldValue === values)
+      return Object.values(temp).every((x) => x === "");
   };
 
   const HandleNameChange = (e) => {
@@ -69,7 +80,9 @@ const EmployeeFrom = (props) => {
     const changeName = { ...values };
     changeName.fullName = e.target.value;
     setValues(changeName);
-    console.log(values);
+    if (e) {
+      validate(changeName);
+    }
   };
 
   const HandleEmailChange = (e) => {
@@ -77,6 +90,9 @@ const EmployeeFrom = (props) => {
     const changeEmail = { ...values };
     changeEmail.email = e.target.value;
     setValues(changeEmail);
+    if (e) {
+      validate(changeEmail);
+    }
   };
   const HandleGenderChange = (e) => {
     const changeGender = { ...values };
@@ -87,6 +103,9 @@ const EmployeeFrom = (props) => {
     const changeDepartment = { ...values };
     changeDepartment.departmentId = e.target.value;
     setValues(changeDepartment);
+    if (e) {
+      validate(changeDepartment);
+    }
   };
   const HandleIsPerminentChange = () => {
     const changeStatus = { ...values };
@@ -105,19 +124,31 @@ const EmployeeFrom = (props) => {
     const changeNumber = { ...values };
     changeNumber.mobileNumber = e.target.value;
     setValues(changeNumber);
+    if (e) {
+      validate(changeNumber);
+    }
   };
   const HandleCityChange = (e) => {
     e.preventDefault();
     const changeCity = { ...values };
     changeCity.city = e.target.value;
     setValues(changeCity);
+    if (e) {
+      validate(changeCity);
+    }
   };
 
   const HandleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      window.alert("form submitted");
+      employeeServices.insertEmployee(values);
+      setValues(initialValues);
     }
+  };
+
+  const HandleRest = () => {
+    setValues(initialValues);
+    setErrors({});
   };
 
   return (
@@ -181,7 +212,7 @@ const EmployeeFrom = (props) => {
           />
           <div>
             <Button type="submit" text="submit" onClick={HandleSubmit} />
-            <Button text="reset" color="default" />
+            <Button text="reset" color="default" onClick={HandleRest} />
           </div>
         </Grid>
       </Grid>
