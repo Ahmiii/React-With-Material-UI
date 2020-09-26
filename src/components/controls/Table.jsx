@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TableContainer = (records, columns) => {
-  const pages = ["5", "10", "25"];
+  const pages = [5, 10, 25];
   const [page, setpage] = useState(0);
   const [rowsPerPage, setrowsPerPage] = useState(pages[page]);
 
@@ -39,6 +39,16 @@ const TableContainer = (records, columns) => {
     </TableHead>
   );
 
+  const HandlePageChange = (e, newPageIndex) => {
+    setpage(newPageIndex);
+  };
+
+  const HandleRowsPerPageChange = (e) => {
+    e.preventDefault();
+    setrowsPerPage(e.target.value);
+    setpage(0);
+  };
+
   const TblPagination = () => (
     <TablePagination
       component="div"
@@ -46,13 +56,20 @@ const TableContainer = (records, columns) => {
       rowsPerPage={rowsPerPage}
       page={page}
       count={records.length}
+      onChangePage={HandlePageChange}
+      onChangeRowsPerPage={HandleRowsPerPageChange}
     />
   );
+
+  const recordAfterPagination = () => {
+    return records.slice(page * rowsPerPage, (1 + page) * rowsPerPage);
+  };
 
   return {
     TblHeader,
     TblContainer,
     TblPagination,
+    recordAfterPagination,
   };
 };
 

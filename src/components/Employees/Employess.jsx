@@ -30,10 +30,12 @@ const Employess = (props) => {
 
   const [records, setrecords] = useState(EmployeesServices.getAllEmployees());
 
-  const { TblContainer, TblHeader, TblPagination } = TableContainer(
-    records,
-    pageHeader
-  );
+  const {
+    TblContainer,
+    TblHeader,
+    TblPagination,
+    recordAfterPagination,
+  } = TableContainer(records, pageHeader);
   return (
     <div>
       <PageHeader title="hello" subtitle="hello" icon={<PeopleOutlineIcon />} />
@@ -42,8 +44,8 @@ const Employess = (props) => {
         <TblContainer>
           <TblHeader />
           <TableBody>
-            {records &&
-              records.map((employee) => (
+            {recordAfterPagination() &&
+              recordAfterPagination().map((employee) => (
                 <TableRow key={employee.id}>
                   <TableCell>{employee.fullName}</TableCell>
                   <TableCell>{employee.email}</TableCell>
