@@ -6,6 +6,7 @@ import {
   TableCell,
   makeStyles,
   TablePagination,
+  TableSortLabel,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -23,17 +24,33 @@ const TableContainer = (records, columns) => {
   const pages = [5, 10, 25];
   const [page, setpage] = useState(0);
   const [rowsPerPage, setrowsPerPage] = useState(pages[page]);
+  const [order, setorder] = useState();
+  const [orderBy, setOrderBy] = useState();
 
   const classes = useStyles();
   const TblContainer = (props) => (
     <Table className={classes.table}>{props.children}</Table>
   );
 
+  const SortTheCol = (colId) => {
+    const Asc = orderBy === colId && order === "desc";
+    setOrderBy(colId);
+    setorder(Asc ? "asc" : "desc");
+    console.log(order);
+  };
   const TblHeader = (props) => (
     <TableHead>
       <TableRow>
         {columns.map((col) => (
-          <TableCell key={col.id}>{col.label}</TableCell>
+          <TableCell key={col.id}>
+            <TableSortLabel
+              active={orderBy === col.id}
+              direction={orderBy === col.id ? order : "asc"}
+              onClick={() => SortTheCol(col.id)}
+            >
+              {col.label}
+            </TableSortLabel>
+          </TableCell>
         ))}
       </TableRow>
     </TableHead>
