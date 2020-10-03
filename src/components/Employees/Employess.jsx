@@ -3,19 +3,28 @@ import PageHeader from "../PageHeader/pageHeader";
 import EmployeeForm from "./EmployeesForm/EmployeeFrom";
 import TableContainer from "../controls/Table";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleAltOutlined";
+import Controls from "../controls/controls";
+
 import {
   withStyles,
   Paper,
   TableBody,
   TableRow,
   TableCell,
+  Toolbar,
+  InputAdornment,
 } from "@material-ui/core";
+import Search from "@material-ui/icons/Search";
+
 import * as EmployeesServices from "../../services/employee";
 
 const styles = (theme) => ({
   paperContent: {
     margin: theme.spacing(5),
     padding: theme.spacing(3),
+  },
+  inputSize: {
+    width: "75%",
   },
 });
 const pageHeader = [
@@ -29,23 +38,58 @@ const Employess = (props) => {
   const { classes } = props;
 
   const [records, setrecords] = useState(EmployeesServices.getAllEmployees());
+  const [filter, setfilter] = useState({
+    filterOperation: (items) => {
+      return items;
+    },
+  });
+
+  const filterRecords = (e) => {
+    let target = e.target;
+    setfilter({
+      filterOperation: (items) => {
+        if (target.value === "") {
+          return items;
+        } else {
+          return items.filter((item) =>
+            item.fullName.toLowerCase().includes(target.value)
+          );
+        }
+      },
+    });
+  };
 
   const {
     TblContainer,
     TblHeader,
     TblPagination,
-    recordAfterPagination,
-  } = TableContainer(records, pageHeader);
+    sortedrecordAfterPagination,
+  } = TableContainer(records, pageHeader, filter);
+
   return (
     <div>
       <PageHeader title="hello" subtitle="hello" icon={<PeopleOutlineIcon />} />
       <Paper className={classes.paperContent}>
-        {/* <EmployeeForm /> */}
+        <EmployeeForm />
+        <Toolbar>
+          <Controls.Input
+            className={classes.inputSize}
+            label="Searc Employees"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+            onChange={filterRecords}
+          />
+        </Toolbar>
         <TblContainer>
           <TblHeader />
           <TableBody>
-            {recordAfterPagination() &&
-              recordAfterPagination().map((employee) => (
+            {sortedrecordAfterPagination() &&
+              sortedrecordAfterPagination().map((employee) => (
                 <TableRow key={employee.id}>
                   <TableCell>{employee.fullName}</TableCell>
                   <TableCell>{employee.email}</TableCell>

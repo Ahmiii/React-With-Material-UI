@@ -20,11 +20,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TableContainer = (records, columns) => {
+const TableContainer = (records, columns, filter) => {
   const pages = [5, 10, 25];
   const [page, setpage] = useState(0);
   const [rowsPerPage, setrowsPerPage] = useState(pages[page]);
-  const [order, setorder] = useState();
+  const [order, setorder] = useState("desc");
   const [orderBy, setOrderBy] = useState();
 
   const classes = useStyles();
@@ -33,16 +33,18 @@ const TableContainer = (records, columns) => {
   );
 
   const SortTheCol = (colId) => {
-    const Asc = orderBy === colId && order === "desc";
+    const Asc = orderBy === colId && order === "asc";
     setOrderBy(colId);
-    setorder(Asc ? "asc" : "desc");
-    console.log(order);
+    setorder(Asc ? "desc" : "asc");
   };
   const TblHeader = (props) => (
     <TableHead>
       <TableRow>
         {columns.map((col) => (
-          <TableCell key={col.id}>
+          <TableCell
+            key={col.id}
+            sortDirection={orderBy === col.id ? order : false}
+          >
             <TableSortLabel
               active={orderBy === col.id}
               direction={orderBy === col.id ? order : "asc"}
@@ -78,15 +80,46 @@ const TableContainer = (records, columns) => {
     />
   );
 
-  const recordAfterPagination = () => {
-    return records.slice(page * rowsPerPage, (1 + page) * rowsPerPage);
+  const sortTable = (array, compatator) => {
+    const stablizeArray = array.map((val, index) => [val, index]);
+
+    stablizeArray.sort((a, b) => {
+      const order = compatator(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stablizeArray.map((el) => el[0]);
+  };
+
+  const getComparator = (order, orderBy) => {
+    console.log(order, orderBy);
+    return order === "desc"
+      ? (a, b) => descendingCompetator(a, b, orderBy)
+      : (a, b) => -descendingCompetator(a, b, orderBy);
+  };
+
+  const descendingCompetator = (a, b, orderBy) => {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const sortedrecordAfterPagination = () => {
+    return sortTable(
+      filter.filterOperation(records),
+      getComparator(order, orderBy)
+    ).slice(page * rowsPerPage, (1 + page) * rowsPerPage);
   };
 
   return {
     TblHeader,
     TblContainer,
     TblPagination,
-    recordAfterPagination,
+    sortedrecordAfterPagination,
   };
 };
 
