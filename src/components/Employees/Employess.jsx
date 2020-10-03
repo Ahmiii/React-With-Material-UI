@@ -3,6 +3,7 @@ import PageHeader from "../PageHeader/pageHeader";
 import EmployeeForm from "./EmployeesForm/EmployeeFrom";
 import TableContainer from "../controls/Table";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleAltOutlined";
+import PopUp from "../controls/PopUp";
 import Controls from "../controls/controls";
 
 import {
@@ -14,6 +15,7 @@ import {
   Toolbar,
   InputAdornment,
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import Search from "@material-ui/icons/Search";
 
 import * as EmployeesServices from "../../services/employee";
@@ -25,6 +27,10 @@ const styles = (theme) => ({
   },
   inputSize: {
     width: "75%",
+  },
+  addButton: {
+    position: "absolute",
+    right: "10px",
   },
 });
 const pageHeader = [
@@ -44,6 +50,8 @@ const Employess = (props) => {
     },
   });
 
+  const [openPopup, setopenPopup] = useState(false);
+
   const filterRecords = (e) => {
     let target = e.target;
     setfilter({
@@ -59,6 +67,10 @@ const Employess = (props) => {
     });
   };
 
+  const PopUps = () => {
+    setopenPopup(true);
+  };
+
   const {
     TblContainer,
     TblHeader,
@@ -70,7 +82,6 @@ const Employess = (props) => {
     <div>
       <PageHeader title="hello" subtitle="hello" icon={<PeopleOutlineIcon />} />
       <Paper className={classes.paperContent}>
-        <EmployeeForm />
         <Toolbar>
           <Controls.Input
             className={classes.inputSize}
@@ -83,6 +94,13 @@ const Employess = (props) => {
               ),
             }}
             onChange={filterRecords}
+          />
+          <Controls.Button
+            text="Add Record"
+            varient="outlined"
+            startIcon={<AddIcon />}
+            className={classes.addButton}
+            onClick={PopUps}
           />
         </Toolbar>
         <TblContainer>
@@ -100,6 +118,9 @@ const Employess = (props) => {
           </TableBody>
         </TblContainer>
         <TblPagination />
+        <PopUp openPopup={openPopup} title="Hello">
+          <EmployeeForm />
+        </PopUp>
       </Paper>
     </div>
   );
