@@ -118,7 +118,7 @@ const Employess = (props) => {
           </TableBody>
         </TblContainer>
         <TblPagination />
-        <PopUp openPopup={openPopup} title="Hello">
+        <PopUp openPopup={openPopup} setPopUp={setopenPopup} title="Hello">
           <EmployeeForm />
         </PopUp>
       </Paper>
