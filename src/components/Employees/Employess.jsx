@@ -5,6 +5,7 @@ import TableContainer from "../controls/Table";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleAltOutlined";
 import PopUp from "../controls/PopUp";
 import Controls from "../controls/controls";
+import Notification from "../controls/Notification";
 import * as employeeServices from "../../services/employee";
 
 import {
@@ -54,8 +55,12 @@ const Employess = (props) => {
     },
   });
   const [recordForEdit, setrecordForEdit] = useState(null);
-
   const [openPopup, setopenPopup] = useState(false);
+  const [notify, setnotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
 
   const filterRecords = (e) => {
     let target = e.target;
@@ -92,6 +97,11 @@ const Employess = (props) => {
       console.log("hello");
       employeeServices.UpdateEmployee(employee);
     }
+    setnotify({
+      isOpen: true,
+      message: "submitted successfully",
+      type: "sucess",
+    });
     HandleReset();
     setrecordForEdit(null);
     setopenPopup(false);
@@ -157,6 +167,7 @@ const Employess = (props) => {
         <PopUp openPopup={openPopup} setPopUp={setopenPopup} title="Hello">
           <EmployeeForm recordForEdit={recordForEdit} addorEdit={addorEdit} />
         </PopUp>
+        <Notification notify={notify} setnotify={setnotify} />
       </Paper>
     </div>
   );
