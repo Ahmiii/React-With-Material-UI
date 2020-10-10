@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Textfiled from "../../controls/inputs";
 import RadioButtons from "../../controls/RadioButton";
 import SelectDepartment from "../../controls/select";
 import CheckBox from "../../controls/checkBox";
 import DatePicker from "../../controls/DatePicker";
 import Button from "../../controls/Buttons";
-import * as employeeServices from "../../../services/employee";
 import { withStyles, Grid } from "@material-ui/core";
 
 const styles = (theme) => ({
@@ -43,16 +42,14 @@ const departments = [
 ];
 
 const EmployeeFrom = (props) => {
-  const { classes } = props;
+  const { classes, addorEdit, recordForEdit } = props;
   const [values, setValues] = useState(initialValues);
   const [Errors, setErrors] = useState({});
 
   const validate = (fieldValue = values) => {
     const temp = { ...Errors };
-    console.log(fieldValue);
-    console.log(temp);
+
     if ("fullName" in fieldValue) {
-      console.log("hello");
       temp.fullName = fieldValue.fullName ? "" : "This field is required";
     }
     if ("email" in fieldValue)
@@ -117,7 +114,6 @@ const EmployeeFrom = (props) => {
     const changeDate = { ...values };
     changeDate.hireDate = value;
     setValues(changeDate);
-    console.log(values);
   };
   const HandleNumberChange = (e) => {
     e.preventDefault();
@@ -138,18 +134,27 @@ const EmployeeFrom = (props) => {
     }
   };
 
-  const HandleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      employeeServices.insertEmployee(values);
-      setValues(initialValues);
-    }
-  };
-
   const HandleRest = () => {
     setValues(initialValues);
     setErrors({});
   };
+
+  const HandleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      console.log(values);
+      addorEdit(values, HandleRest);
+    }
+  };
+
+  useEffect(() => {
+    if (recordForEdit != null) {
+      setValues({
+        ...recordForEdit,
+      });
+    }
+    console.log({ recordForEdit });
+  }, [recordForEdit]);
 
   return (
     <form className={classes.root} onSubmit={HandleSubmit}>

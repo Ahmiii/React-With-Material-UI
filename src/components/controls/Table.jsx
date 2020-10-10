@@ -45,13 +45,17 @@ const TableContainer = (records, columns, filter) => {
             key={col.id}
             sortDirection={orderBy === col.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === col.id}
-              direction={orderBy === col.id ? order : "asc"}
-              onClick={() => SortTheCol(col.id)}
-            >
-              {col.label}
-            </TableSortLabel>
+            {col.disableSorting ? (
+              col.label
+            ) : (
+              <TableSortLabel
+                active={orderBy === col.id}
+                direction={orderBy === col.id ? order : "asc"}
+                onClick={() => SortTheCol(col.id)}
+              >
+                {col.label}
+              </TableSortLabel>
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -92,7 +96,6 @@ const TableContainer = (records, columns, filter) => {
   };
 
   const getComparator = (order, orderBy) => {
-    console.log(order, orderBy);
     return order === "desc"
       ? (a, b) => descendingCompetator(a, b, orderBy)
       : (a, b) => -descendingCompetator(a, b, orderBy);

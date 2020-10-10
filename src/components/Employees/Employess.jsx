@@ -5,6 +5,7 @@ import TableContainer from "../controls/Table";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleAltOutlined";
 import PopUp from "../controls/PopUp";
 import Controls from "../controls/controls";
+import * as employeeServices from "../../services/employee";
 
 import {
   withStyles,
@@ -17,6 +18,8 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Search from "@material-ui/icons/Search";
+import EditIcon from "@material-ui/icons/Edit";
+import CloseIcon from "@material-ui/icons/Close";
 
 import * as EmployeesServices from "../../services/employee";
 
@@ -38,6 +41,7 @@ const pageHeader = [
   { id: "email", label: "Email Address" },
   { id: "mobileNumber", label: "Mobile Number" },
   { id: "department", label: "Department" },
+  { id: "actions", label: "Actions", disableSorting: true },
 ];
 
 const Employess = (props) => {
@@ -49,6 +53,7 @@ const Employess = (props) => {
       return items;
     },
   });
+  const [recordForEdit, setrecordForEdit] = useState(null);
 
   const [openPopup, setopenPopup] = useState(false);
 
@@ -77,6 +82,26 @@ const Employess = (props) => {
     TblPagination,
     sortedrecordAfterPagination,
   } = TableContainer(records, pageHeader, filter);
+
+  const addorEdit = (employee, HandleReset) => {
+    console.log({ employee });
+    if (employee.id === 0) {
+      console.log("hello from 0");
+      employeeServices.insertEmployee(employee);
+    } else {
+      console.log("hello");
+      employeeServices.UpdateEmployee(employee);
+    }
+    HandleReset();
+    setrecordForEdit(null);
+    setopenPopup(false);
+    setrecords(EmployeesServices.getAllEmployees());
+    console.log({ records });
+  };
+  const editEmployee = (employee) => {
+    PopUps();
+    setrecordForEdit(employee);
+  };
 
   return (
     <div>
@@ -113,13 +138,24 @@ const Employess = (props) => {
                   <TableCell>{employee.email}</TableCell>
                   <TableCell>{employee.mobileNumber}</TableCell>
                   <TableCell>{employee.department}</TableCell>
+                  <TableCell>
+                    <Controls.ActionButton color="primary">
+                      <EditIcon
+                        fontSize="small"
+                        onClick={() => editEmployee(employee)}
+                      />
+                    </Controls.ActionButton>
+                    <Controls.ActionButton color="primary">
+                      <CloseIcon fontSize="small" />
+                    </Controls.ActionButton>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </TblContainer>
         <TblPagination />
         <PopUp openPopup={openPopup} setPopUp={setopenPopup} title="Hello">
-          <EmployeeForm />
+          <EmployeeForm recordForEdit={recordForEdit} addorEdit={addorEdit} />
         </PopUp>
       </Paper>
     </div>
