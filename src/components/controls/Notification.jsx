@@ -25,7 +25,9 @@ const Notification = (props) => {
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       onClose={HandleClose}
     >
-      <Alert onClose={HandleClose}>{notify.message}</Alert>
+      <Alert severity={notify.type} onClose={HandleClose}>
+        {notify.message}
+      </Alert>
     </Snackbar>
   );
 };

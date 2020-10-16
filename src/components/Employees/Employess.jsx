@@ -6,6 +6,7 @@ import PeopleOutlineIcon from "@material-ui/icons/PeopleAltOutlined";
 import PopUp from "../controls/PopUp";
 import Controls from "../controls/controls";
 import Notification from "../controls/Notification";
+import ConformationDialoge from "../controls/Conformation";
 import * as employeeServices from "../../services/employee";
 
 import {
@@ -61,7 +62,11 @@ const Employess = (props) => {
     message: "",
     type: "",
   });
-
+  const [conformDialoge, setconformDialoge] = useState({
+    isOpen: false,
+    title: "",
+    subtitle: "",
+  });
   const filterRecords = (e) => {
     let target = e.target;
     setfilter({
@@ -113,6 +118,30 @@ const Employess = (props) => {
     setrecordForEdit(employee);
   };
 
+  const DeleteEmployee = (id) => {
+    employeeServices.DeleteEmployee(id);
+    setrecords(employeeServices.getAllEmployees());
+    setconformDialoge({
+      ...conformDialoge,
+      isOpen: false,
+    });
+    setnotify({
+      isOpen: true,
+      message: "Delete Successfully",
+      type: "error",
+    });
+  };
+
+  const conformationDialogePopUp = (id) => {
+    setconformDialoge({
+      isOpen: true,
+      title: "Are you sure you want to delete",
+      subtitle: "once delete action can not be undo",
+      onConform: () => {
+        DeleteEmployee(id);
+      },
+    });
+  };
   return (
     <div>
       <PageHeader title="hello" subtitle="hello" icon={<PeopleOutlineIcon />} />
@@ -156,7 +185,10 @@ const Employess = (props) => {
                       />
                     </Controls.ActionButton>
                     <Controls.ActionButton color="primary">
-                      <CloseIcon fontSize="small" />
+                      <CloseIcon
+                        fontSize="small"
+                        onClick={() => conformationDialogePopUp(employee.id)}
+                      />
                     </Controls.ActionButton>
                   </TableCell>
                 </TableRow>
@@ -168,6 +200,10 @@ const Employess = (props) => {
           <EmployeeForm recordForEdit={recordForEdit} addorEdit={addorEdit} />
         </PopUp>
         <Notification notify={notify} setnotify={setnotify} />
+        <ConformationDialoge
+          conformDialoge={conformDialoge}
+          setconformDialoge={setconformDialoge}
+        />
       </Paper>
     </div>
   );

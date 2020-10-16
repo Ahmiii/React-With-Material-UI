@@ -45,3 +45,8 @@ export const UpdateEmployee = (data) => {
   console.log({ employees });
   localStorage.setItem(KEYS.employees, JSON.stringify(employees));
 };
+export const DeleteEmployee = (id) => {
+  let employees = getAllEmployees();
+  employees = employees.filter((x) => x.id !== id);
+  localStorage.setItem(KEYS.employees, JSON.stringify(employees));
+};
